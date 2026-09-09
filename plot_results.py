@@ -11,6 +11,63 @@ FIG_DIR = Path(__file__).resolve().parent / "figures"
 T = 1.0
 
 
+def four_variants_comparison(N: int = 80) -> None:
+    """2×2 panel: BdG/Majorana × OBC/PBC for E_min(μ) at Δ=t=1."""
+    mus = np.linspace(-3.0, 3.0, 81)
+    delta = 1.0
+    variants = [
+        ("bdg", "obc", "BdG + OBC"),
+        ("bdg", "pbc", "BdG + PBC"),
+        ("majorana", "obc", "Majorana + OBC"),
+        ("majorana", "pbc", "Majorana + PBC"),
+    ]
+
+    fig, axes = plt.subplots(2, 2, figsize=(9.0, 7.0), sharex=True, sharey=True)
+    for ax, (rep, bnd, title) in zip(axes.ravel(), variants):
+        e_min = np.array(
+            [
+                spectrum(N, mu, delta=delta, t=T, representation=rep, boundary=bnd)["E"][
+                    0
+                ]
+                for mu in mus
+            ]
+        )
+        ax.semilogy(mus, np.maximum(e_min, 1e-16), color="#1f4e79", lw=1.8)
+        ax.axvline(-2 * T, color="#888", ls="--", lw=1)
+        ax.axvline(2 * T, color="#888", ls="--", lw=1)
+        ax.set_title(title)
+        ax.set_xlim(-3, 3)
+        ax.grid(True, which="both", alpha=0.25)
+
+    for ax in axes[1, :]:
+        ax.set_xlabel(r"$\mu$")
+    for ax in axes[:, 0]:
+        ax.set_ylabel(r"$E_{\min}$")
+    fig.suptitle(rf"Four variants: $E_{{\min}}(\mu)$ ($N={N}$, $\Delta=t=1$)", y=1.01)
+    fig.tight_layout()
+    fig.savefig(FIG_DIR / "four_variants.png", dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+    # Snapshot table values at representative μ
+    print("\n=== Four-variant snapshot (N={}, Delta=t=1) ===".format(N))
+    print(f"{'variant':22s} {'mu=0':>12s} {'mu=2':>12s} {'mu=3':>12s}")
+    for rep, bnd, title in variants:
+        vals = []
+        for mu in (0.0, 2.0, 3.0):
+            e0 = spectrum(N, mu, delta=1.0, t=T, representation=rep, boundary=bnd)["E"][
+                0
+            ]
+            vals.append(f"{e0:.3e}")
+        print(f"{title:22s} {vals[0]:>12s} {vals[1]:>12s} {vals[2]:>12s}")
+
+    # Cross-representation agreement at one point
+    for bnd in ("obc", "pbc"):
+        bdg = spectrum(N, 0.5, 0.8, t=T, representation="bdg", boundary=bnd)
+        maj = spectrum(N, 0.5, 0.8, t=T, representation="majorana", boundary=bnd)
+        d = np.max(np.abs(bdg["full"] - maj["full"]))
+        print(f"BdG vs Majorana max|diff| ({bnd}, mu=0.5, Delta=0.8): {d:.3e}")
+
+
 def gap_vs_mu_obc(N: int = 100) -> None:
     mus = np.linspace(-3.0, 3.0, 121)
     e_min = np.array(
@@ -95,6 +152,7 @@ def print_tables() -> None:
 
 def main() -> None:
     FIG_DIR.mkdir(exist_ok=True)
+    four_variants_comparison()
     gap_vs_mu_obc()
     gap_closing_pbc()
     bdg_vs_majorana()
