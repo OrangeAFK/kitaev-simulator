@@ -18,7 +18,13 @@ python scripts/validate_representations.py
 
 # Regenerate all seven figures into figures/
 python scripts/generate_figures.py
+
+# Combine the figures into one printable PDF (figures/kitaev_figures.pdf)
+python scripts/make_figure_pdf.py
 ```
+
+Printable version of all figures: [figures/kitaev_figures.pdf](figures/kitaev_figures.pdf)
+(US Letter portrait, one figure per page).
 
 ## Layout
 
@@ -28,7 +34,8 @@ src/diagonalization.py    # spectra, gap, Bloch E(k)
 src/wavefunctions.py      # site/Majorana weights, localization length
 scripts/validate_representations.py
 scripts/generate_figures.py
-figures/
+scripts/make_figure_pdf.py
+figures/                  # 7 PNGs + kitaev_figures.pdf
 ```
 
 ## Conventions
