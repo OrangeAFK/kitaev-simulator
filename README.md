@@ -49,7 +49,7 @@ Majorana PBC Bloch bands at \(\mu=0\), \(\Delta=1\), overlaid with the analytic 
 
 ### Figure 2 — PBC vs OBC spectrum across \(\mu\)
 
-Full particle-hole spectrum \(\pm E_n(\mu)\) for \(N=100\), \(\Delta=1\). OBC shows the hybridized MZM pair \(\pm E_{\min}\) near zero for \(|\mu|<2\); PBC does not.
+Full particle-hole spectrum \(\pm E_n(\mu)\) for \(N=100\), \(\Delta=1\). OBC shows the hybridized MZM pair \(\pm E_{\min}\) near zero for \(|\mu|<2\); PBC does not. Insets zoom on \(|E|\le 0.1\) near \(\mu=2\), where the finite-size splitting is resolvable: the OBC pair stays pinned to zero and then peels away, while the PBC branches simply cross zero at the gap closing.
 
 ![Figure 2](figures/fig02_pbc_vs_obc_spectrum.png)
 

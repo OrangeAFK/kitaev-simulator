@@ -93,6 +93,20 @@ def fig02_pbc_vs_obc_spectrum() -> None:
         ax.set_xlabel(r"$\mu$")
         ax.set_title(rf"{title} spectrum ($N={N}$, $\Delta={delta}$)")
         ax.set_xlim(-3, 3)
+
+        # E_min ~ 1e-15 deep in the topological phase and only ~0.03 at mu=2,
+        # so the +/- pair is unresolvable on the full energy scale.
+        axin = ax.inset_axes((0.56, 0.56, 0.41, 0.36), zorder=10)
+        axin.set_facecolor("white")
+        for n in range(spec.shape[1]):
+            axin.plot(mus, spec[:, n], color="C0", lw=0.6)
+            axin.plot(mus, -spec[:, n], color="C0", lw=0.6)
+        axin.axhline(0, color="gray", lw=0.5)
+        axin.axvline(2, color="r", ls="--", lw=0.8)
+        axin.set_xlim(1.4, 2.6)
+        axin.set_ylim(-0.1, 0.1)
+        axin.tick_params(labelsize=6)
+        axin.set_title(r"zoom: $\pm E_{\min}$ near $\mu=2$", fontsize=7)
     axes[0].set_ylabel(r"$E_n$")
     _save(fig, "fig02_pbc_vs_obc_spectrum.png")
 
