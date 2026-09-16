@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the eight SPEC figures into figures/."""
+"""Generate the seven study figures into figures/."""
 
 from __future__ import annotations
 
@@ -83,9 +83,11 @@ def fig02_pbc_vs_obc_spectrum() -> None:
     for ax, spec, title in zip(
         axes, [pbc_spec, obc_spec], ["PBC", "OBC"], strict=True
     ):
-        # Plot every quasiparticle branch as thin lines
+        # Full particle-hole spectrum: +/- E_n (and zero when E_min ~ 0)
         for n in range(spec.shape[1]):
             ax.plot(mus, spec[:, n], color="C0", lw=0.4, alpha=0.7)
+            ax.plot(mus, -spec[:, n], color="C0", lw=0.4, alpha=0.7)
+        ax.axhline(0, color="gray", lw=0.5)
         ax.axvline(-2, color="r", ls="--", lw=0.8)
         ax.axvline(2, color="r", ls="--", lw=0.8)
         ax.set_xlabel(r"$\mu$")
@@ -187,35 +189,7 @@ def fig04_representation_comparison() -> None:
     _save(fig, "fig04_representation_comparison.png")
 
 
-def fig05_majorana_components() -> None:
-    N, mu, delta = 100, 0.0, 1.0
-    _, maj_w, eref = lowest_subspace_weights_majorana(N, mu, delta, pbc=False)
-    a = np.arange(2, 2 * N + 2)  # Majorana labels 2 .. 2N+1
-
-    fig, ax = plt.subplots(figsize=(8, 4))
-    ax.bar(a, maj_w, width=1.0, color="C0", align="center")
-    ax.axvline(2, color="r", ls="--", lw=1.0, label=r"$\gamma_2$")
-    ax.axvline(2 * N + 1, color="m", ls="--", lw=1.0, label=rf"$\gamma_{{{2*N+1}}}$")
-    ax.set_xlabel(r"Majorana index $a$")
-    ax.set_ylabel(r"$|\psi_a|^2$")
-    ax.set_title(
-        rf"OBC zero-mode Majorana components ($N={N}$, $\mu={mu}$, $\Delta={delta}$, $|E|\approx{eref:.1e}$)"
-    )
-    ax.legend(loc="upper center")
-
-    # Secondary axis: physical site j = ceil((a-1)/2) roughly; site j has gamma_{2j}, gamma_{2j+1}
-    def a_to_j(a_val: np.ndarray) -> np.ndarray:
-        return np.ceil((a_val - 1) / 2)
-
-    def j_to_a(j_val: np.ndarray) -> np.ndarray:
-        return 2 * j_val
-
-    sec = ax.secondary_xaxis("top", functions=(a_to_j, j_to_a))
-    sec.set_xlabel(r"physical site $j$")
-    _save(fig, "fig05_majorana_components.png")
-
-
-def fig06_wavefunction_transition() -> None:
+def fig05_wavefunction_transition() -> None:
     N, delta = 100, 1.0
     mus = [0.0, 1.5, 1.9, 2.0, 2.1, 2.5]
     sites = np.arange(1, N + 1)
@@ -245,10 +219,10 @@ def fig06_wavefunction_transition() -> None:
     for ax in axes[:, 0]:
         ax.set_ylabel(r"$|\psi_j|^2$")
     fig.suptitle(rf"OBC lowest-state weight through the transition ($N={N}$, $\Delta={delta}$)")
-    _save(fig, "fig06_wavefunction_transition.png")
+    _save(fig, "fig05_wavefunction_transition.png")
 
 
-def fig07_finite_size_splitting() -> None:
+def fig06_finite_size_splitting() -> None:
     delta = 1.0
     # Panel A: E_min vs N at mu=0 (exact zeros) — use mu=1.5 for visible exponential
     # SPEC says mu=0, Delta=1. At that point E_min is exactly 0.
@@ -296,10 +270,10 @@ def fig07_finite_size_splitting() -> None:
     axes[1].set_title(r"$E_{\min}(\mu)$ for several $N$ ($\Delta=1$)")
     axes[1].legend(fontsize=8)
     axes[1].set_xlim(-3, 3)
-    _save(fig, "fig07_finite_size_splitting.png")
+    _save(fig, "fig06_finite_size_splitting.png")
 
 
-def fig08_delta_dependence() -> None:
+def fig07_delta_dependence() -> None:
     N, mu = 100, 0.0
     deltas = np.linspace(0.0, 2.0, 81)
 
@@ -335,7 +309,7 @@ def fig08_delta_dependence() -> None:
     axes[1].set_ylabel(r"$\xi$")
     axes[1].set_title(rf"OBC localization length vs $\Delta$ ($\mu={mu}$)")
     axes[1].set_xlim(0, 2)
-    _save(fig, "fig08_delta_dependence.png")
+    _save(fig, "fig07_delta_dependence.png")
 
 
 def main() -> None:
@@ -343,10 +317,9 @@ def main() -> None:
     fig02_pbc_vs_obc_spectrum()
     fig03_gap_localization()
     fig04_representation_comparison()
-    fig05_majorana_components()
-    fig06_wavefunction_transition()
-    fig07_finite_size_splitting()
-    fig08_delta_dependence()
+    fig05_wavefunction_transition()
+    fig06_finite_size_splitting()
+    fig07_delta_dependence()
     print("All figures generated.")
 
 
