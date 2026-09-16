@@ -24,7 +24,7 @@ python scripts/make_figure_pdf.py
 ```
 
 Printable version of all figures: [figures/kitaev_figures.pdf](figures/kitaev_figures.pdf)
-(US Letter portrait, one figure per page).
+(US Letter portrait, two figures per page).
 
 ## Layout
 
